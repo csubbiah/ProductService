@@ -1,0 +1,16 @@
+//ProductService
+Capabilities:
+  Product Search
+  Product Add
+
+ Iterations: for Product Search
+ Scaffolding - Red and Green
+  Write a Test for Product Controller - Search Method to return a Mock product with No Input Parameters
+  Implement the Controller, so when rerun the test Mock succeeds - {Product Type and Controller Implemented}
+  Now, Pass the Product Type to the Controller and Validate the input and return the Mock Product
+  Move the Input Validation to Product Service Search Method
+  Invoke the Product Service Search Method from the Controller
+  Update the Existing Test Method to invoke the Search Method from the Controller & Assert the Mock Product
+
+Refactor:
+ Replace the hardcoded return values with DB calls to H2DB
