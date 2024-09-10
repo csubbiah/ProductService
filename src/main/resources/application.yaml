@@ -1,9 +1,9 @@
 server:
   port: 8080
   application:
-    name: "ProductService"
-    version: "1.0"
-    description: "Product Service for Online Shopping"
+    name: ProductService
+    version: 1.0
+    description: Product Service for Online Shopping
 
 spring:
   datasource:
