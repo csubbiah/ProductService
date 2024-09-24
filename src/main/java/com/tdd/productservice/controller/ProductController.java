@@ -1,20 +1,29 @@
 package com.tdd.productservice.controller;
 
-import com.tdd.productservice.entity.Product;
+import com.tdd.productservice.model.Product;
+import com.tdd.productservice.service.IProductService;
+
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
+
+    private final IProductService productService;
+
+    public ProductController(IProductService productService) {
+        this.productService = productService;
+    }
+
     @GetMapping
-    public Product getProducts() {
-        return Product.builder()
-                .productName("Test Product")
-                .price(Long.parseLong("10"))
-                .quantity(Long.parseLong("5"))
-                .build();
+    public List<Product> getProducts() {
+
+        return productService.getProducts();
     }
 }

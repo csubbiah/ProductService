@@ -23,6 +23,11 @@ repositories {
     mavenCentral()
 }
 
+bootBuildImage {
+    imageName = "localhost:8080/com.tdd.productservice/tddproductservice" // Correct
+    // imageName = "$imageName" // Incorrect
+}
+
 ext {
     set('springCloudVersion', "2023.0.3")
 }
