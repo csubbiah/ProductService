@@ -6,6 +6,7 @@ import com.tdd.productservice.repository.ProductServiceRepository;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -28,7 +29,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<Product> searchProducts(Product product) {
+    public Optional<List<Product>> searchProducts(Product product) {
         validateProduct(product);
         return productServiceRepository.searchProduct(product);
     }

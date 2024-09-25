@@ -1,6 +1,9 @@
 package com.tdd.productservice.model;
 
 import lombok.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 
 @AllArgsConstructor
@@ -9,8 +12,15 @@ import lombok.*;
 @Getter
 @Setter
 public class Product {
-    private long id;
+    @NotNull(message = "ID cannot be null")
+    private Integer id;
+
+    @NotEmpty(message = "Product name cannot be empty")
     private String name;
-    private long price;
-    private long quantity;
+
+    @Min(value = 0, message = "Price cannot be negative")
+    private double price;
+
+    @Min(value = 0, message = "Quantity cannot be negative")
+    private int quantity;
 }

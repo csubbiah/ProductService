@@ -2,17 +2,20 @@ package com.tdd.productservice.repository;
 
 import com.tdd.productservice.model.Product;
 
+import lombok.Getter;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 
-
+@Getter
 @Repository
 public class ProductServiceRepository {
 
-    private List<Product> products = new ArrayList<>();
+    private final List<Product> products;
 
     public ProductServiceRepository(List<Product> products) {
         this.products = products;
@@ -26,20 +29,23 @@ public class ProductServiceRepository {
         }
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public List<Product> searchProduct(Product product) {
-        List<Product> result = new ArrayList<>();
+    public Optional<List<Product>> searchProduct(Product product) {
+        AtomicReference<Optional<List<Product>>> result = new AtomicReference<>(Optional.empty());
         for (Product p : products) {
             if (product.getName() != null && !product.getName().isEmpty() && !p.getName().equals(product.getName())
             || product.getPrice() > 0 && p.getPrice() != product.getPrice() || product.getQuantity() > 0 && p.getQuantity() != product.getQuantity()) {
                 continue;
             }
-            result.add(p);
+            result.get().ifPresentOrElse(
+                    list -> list.add(p),
+                    () -> {
+                        List<Product> newList = new ArrayList<>();
+                        newList.add(p);
+                        result.set(Optional.of(newList));
+                    }
+            );
         }
-        return result;
+        return result.get();
     }
 
     // Add other repository methods as needed
