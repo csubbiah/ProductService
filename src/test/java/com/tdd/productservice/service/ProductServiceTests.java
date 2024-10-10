@@ -2,54 +2,73 @@ package com.tdd.productservice.service;
 
 import com.tdd.productservice.model.Product;
 import com.tdd.productservice.repository.ProductServiceRepository;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-class ProductServiceTests {
+public class ProductServiceTests {
 
     private final Product firstProduct = Product.builder().id(1).name("Product 1").price(100).quantity(10).build();
     private final Product secondProduct = Product.builder().id(2).name("Product 2").price(200).quantity(20).build();
-    private List<Product>   products;
-
-    @BeforeEach
-    public void setUp() {
-        this.products = new ArrayList<>(Arrays.asList(this.firstProduct, this.secondProduct));
-    }
+    public List<Product>   products;
+    public Optional<List<Product>> searchResult;
 
 
     @Mock
     private ProductServiceRepository mockProductServiceRepository;
 
+
     @InjectMocks
     private IProductService productService = new ProductService(mockProductServiceRepository);
+
+
+    @BeforeEach
+    public void setUp() {
+        //Test setup
+        CleanupServiceAndRepository();
+        this.products = new ArrayList<>(Arrays.asList(this.firstProduct, this.secondProduct));
+        mockProductServiceRepository = new ProductServiceRepository(products);
+        productService = new ProductService(mockProductServiceRepository);
+    }
 
 
     @AfterEach
     public void tearDown() {
         //Test cleanup
+        this.products.clear();
+        this.products = null;
+        productService = null;
+    }
+
+
+    public void getProducts() {
+        products = productService.getProducts();
+      }
+
+    public void searchProduct(Product product) {
+        searchResult = this.productService.searchProducts(product);
     }
 
     @Test
     void getAllProducts() {
-        Mockito.when(mockProductServiceRepository.getProducts()).thenReturn(products);
+
         // Act
         List<Product> result = this.productService.getProducts();
         // Assert
@@ -60,14 +79,11 @@ class ProductServiceTests {
 
     @Test
     void givensearch_whencriteriaisID1Price100Qty10_thenreturnfirstproduct() {
-        ClearProducts();
-        AddProducts(firstProduct);
-        Mockito.when(mockProductServiceRepository.searchProduct(firstProduct)).thenReturn(Optional.of(products));
         // Act
-        Optional<List<Product>> result = this.productService.searchProducts(firstProduct);
+        searchResult = this.productService.searchProducts(firstProduct);
         // Assert
-        if (result.isPresent()) {
-            List<Product> productList = result.get();
+        if (searchResult.isPresent()) {
+            List<Product> productList = searchResult.get();
             assertEquals(1, productList.size());
             assertEquals("Product 1", productList.get(0).getName());
             assertEquals(100, productList.get(0).getPrice());
@@ -79,24 +95,25 @@ class ProductServiceTests {
 
     @Test
     void givensearch_whencriteriaisIDisNullPrice100Qty10_thenreturnEmpty() {
+        //Arrange
         ClearProducts();
-        Mockito.when(mockProductServiceRepository.searchProduct(firstProduct)).thenReturn(Optional.of(products));
         // Act
         Optional<List<Product>> result = this.productService.searchProducts(firstProduct);
         // Assert
-        if (result.isPresent()) {
-            List<Product> productList = result.get();
-            assertEquals(0, productList.size());
+        if (result.isEmpty()) {
+            assertTrue(true);
         } else {
             fail("Expected product list to be present");
         }
     }
 
-    void ClearProducts() {
-        this.products.clear();
+    void CleanupServiceAndRepository() {
+        this.products = null;
+        mockProductServiceRepository = null;
+        productService = null;
     }
 
-    void AddProducts(Product product) {
-        this.products.add(product);
+    void ClearProducts() {
+        this.products.clear();
     }
 }

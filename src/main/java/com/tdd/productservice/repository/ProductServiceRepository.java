@@ -19,10 +19,7 @@ public class ProductServiceRepository {
 
     public ProductServiceRepository(List<Product> products) {
         this.products = products;
-        if(!products.isEmpty()) {
-            this.products.addAll(products);
-        }
-        else {
+        if(products.isEmpty()){
             this.products.add(Product.builder().id(1).name("Product 1").price(100).quantity(10).build());
             this.products.add(Product.builder().id(2).name("Product 2").price(200).quantity(20).build());
             this.products.add(Product.builder().id(3).name("Product 3").price(300).quantity(30).build());

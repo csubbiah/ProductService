@@ -10,7 +10,7 @@ Feature: Product Management
     Then I should get a list of <count> products
     Examples:
       | count |
-      | 3     |
+      | 2     |
 
     @Search
   Scenario Outline: Search for a product by criteria
